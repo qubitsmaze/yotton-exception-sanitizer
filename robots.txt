@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://qubitsmaze.github.io/yotton-exception-sanitizer/sitemap.xml

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; worker-src 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f1ecdf">
+  <meta name="description" content="Convert up to 25 n8n-style workflow error records into a pseudonymous, reviewable evidence bundle entirely in your browser. No upload, credentials, or production access.">
+  <meta property="og:title" content="Yotton Local Exception Sanitizer">
+  <meta property="og:description" content="A browser-only safe-export tool for recurring automation failures. Nothing leaves your browser.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://qubitsmaze.github.io/yotton-exception-sanitizer/">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="https://qubitsmaze.github.io/yotton-exception-sanitizer/">
+  <link rel="stylesheet" href="styles.css">
+  <title>Yotton Local Exception Sanitizer — No Upload</title>
+</head>
+<body>
+  <a class="skip-link" href="#tool">Skip to sanitizer</a>
+
+  <header class="site-header">
+    <a class="brand" href="https://yotton.monatomicsmaze.workers.dev" aria-label="Yotton home">
+      <span class="brand-mark">Y</span>
+      <span>YOTTON</span>
+    </a>
+    <nav aria-label="Primary">
+      <a href="#how">How it works</a>
+      <a href="#boundaries">Boundaries</a>
+      <a class="nav-cta" href="https://yotton.monatomicsmaze.workers.dev/#request">Request audit</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="eyebrow">LOCAL-FIRST // FREE TOOL // SEMANTIC CONTRACT V2</div>
+      <h1 id="hero-title">EXPOSE THE FAILURE.<br><em>NOT THE CUSTOMER.</em></h1>
+      <p class="hero-copy">Convert up to 25 n8n-style execution errors into pseudonymous failure classes, authority boundaries, and a checksummed review bundle. <strong>Nothing leaves your browser.</strong></p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#tool">Sanitize a local JSON file</a>
+        <button class="button button-secondary" id="load-sample-top" type="button">Run synthetic demo</button>
+      </div>
+      <ul class="trust-strip" aria-label="Safety properties">
+        <li>NO UPLOAD</li>
+        <li>NO ANALYTICS</li>
+        <li>NO CREDENTIALS</li>
+        <li>NO PRODUCTION ACCESS</li>
+      </ul>
+    </section>
+
+    <section class="proof-band" aria-label="Tool contract">
+      <div><strong>25</strong><span>record hard cap</span></div>
+      <div><strong>2 MB</strong><span>local file limit</span></div>
+      <div><strong>3</strong><span>bundle artifacts</span></div>
+      <div><strong>0</strong><span>network requests</span></div>
+    </section>
+
+    <section class="tool-section" id="tool" aria-labelledby="tool-title">
+      <div class="section-heading">
+        <span>01 / LOCAL SANITIZER</span>
+        <h2 id="tool-title">BUILD A REVIEWABLE SAFE-EXPORT BUNDLE.</h2>
+        <p>The browser reads your JSON locally, discards raw values, maps structural failure classes, and generates a ZIP containing only <code>manifest.json</code>, <code>exceptions.csv</code>, and <code>SAFETY-RECEIPT.txt</code>.</p>
+      </div>
+
+      <div class="warning" role="note">
+        <strong>FAIL-CLOSED, NOT MAGIC.</strong>
+        <span>This tool is an additional safety layer—not a substitute for your privacy, legal, or security review. Inspect every generated file before transfer.</span>
+      </div>
+
+      <div class="control-grid">
+        <label>
+          <span>DEFAULT HANDLING MINUTES</span>
+          <input id="handling-minutes" type="number" min="1" max="480" value="15" inputmode="numeric">
+          <small>Owner-supplied estimate per record.</small>
+        </label>
+        <label>
+          <span>PSEUDONYMOUS CUSTOMER REF</span>
+          <input id="customer-ref" type="text" value="customer-local" maxlength="64" pattern="[A-Za-z0-9_-]{3,64}" autocomplete="off">
+          <small>No company or person names.</small>
+        </label>
+        <label>
+          <span>PERIOD START</span>
+          <input id="period-start" type="date">
+          <small>Evidence window start.</small>
+        </label>
+        <label>
+          <span>PERIOD END</span>
+          <input id="period-end" type="date">
+          <small>Evidence window end.</small>
+        </label>
+      </div>
+
+      <div class="drop-zone" id="drop-zone">
+        <input id="json-file" type="file" accept="application/json,.json">
+        <div class="drop-copy">
+          <span class="drop-index">02</span>
+          <div>
+            <strong>DROP OR CHOOSE JSON LOCALLY</strong>
+            <p>Supported: an array, or an object containing <code>executions</code>, <code>errors</code>, <code>results</code>, <code>items</code>, or <code>data</code>.</p>
+          </div>
+        </div>
+        <button class="sample-link" id="load-sample" type="button">Use synthetic fixture instead</button>
+      </div>
+
+      <div class="error-box" id="error-box" role="alert" hidden></div>
+      <div class="status-box" id="status-box" role="status" hidden></div>
+
+      <section class="result-panel" id="result-panel" aria-live="polite" hidden>
+        <div class="result-head">
+          <div><span>SAFE ROWS</span><strong id="safe-count">0</strong></div>
+          <div><span>REJECTED</span><strong id="rejected-count">0</strong></div>
+          <div><span>SOURCE WARNINGS</span><strong id="warning-count">0</strong></div>
+        </div>
+        <div class="source-warning" id="source-warning" hidden>
+          Sensitive-looking material was detected in the source. Raw values are not copied to the output, but you must inspect the generated files and the original data authority before transfer.
+        </div>
+        <div class="preview" id="preview" aria-label="Sanitized record preview"></div>
+
+        <div class="attestations">
+          <label>
+            <input id="rights-attested" type="checkbox">
+            <span>I have the right to use and share this source data.</span>
+          </label>
+          <label>
+            <input id="sanitization-attested" type="checkbox">
+            <span>I reviewed the generated rows and confirm they contain no customer, employee, patient, client, credential, payment, health, government-identifier, or other protected data.</span>
+          </label>
+        </div>
+
+        <div class="download-actions">
+          <button id="download-bundle" class="button button-acid" type="button" disabled>Download complete safe bundle [ZIP]</button>
+          <button id="download-csv" class="button button-dark" type="button" disabled>Download CSV</button>
+          <button id="download-manifest" class="button button-dark" type="button" disabled>Download manifest</button>
+        </div>
+        <div class="checksum" id="checksum" hidden>
+          <span>BUNDLE CREATED LOCALLY // SHA-256</span>
+          <code id="checksum-value"></code>
+          <p>Keep this checksum with the ZIP. No upload occurred.</p>
+        </div>
+      </section>
+    </section>
+
+    <section class="steps" id="how" aria-labelledby="how-title">
+      <div class="section-heading compact">
+        <span>02 / WHAT IT DOES</span>
+        <h2 id="how-title">RAW ERROR → BOUNDED EVIDENCE.</h2>
+      </div>
+      <ol>
+        <li><span>01</span><div><strong>READ LOCALLY</strong><p>Your browser opens one JSON file. The page has a network-denying Content Security Policy and the JavaScript contains no upload call.</p></div></li>
+        <li><span>02</span><div><strong>REMOVE IDENTITY</strong><p>Workflow names and identifiers become deterministic pseudonyms. Raw error text is replaced by coarse structural categories.</p></div></li>
+        <li><span>03</span><div><strong>PRESERVE AUTHORITY</strong><p>Financial, credential, contract, identity, deletion, and other protected cases receive a non-weakenable human or owner authority floor.</p></div></li>
+        <li><span>04</span><div><strong>PACKAGE FOR REVIEW</strong><p>A deterministic ZIP carries the bounded evidence, explicit attestations, and a safety receipt—never the original source.</p></div></li>
+      </ol>
+    </section>
+
+    <section class="boundaries" id="boundaries" aria-labelledby="boundaries-title">
+      <div class="section-heading compact">
+        <span>03 / EVIDENCE BOUNDARY</span>
+        <h2 id="boundaries-title">KNOW WHAT THIS PROVES.</h2>
+      </div>
+      <div class="boundary-grid">
+        <article>
+          <span class="pass">PROVES</span>
+          <h3>A bounded export can be generated locally.</h3>
+          <ul>
+            <li>Pseudonymous workflow references</li>
+            <li>Coarse failure and authority classes</li>
+            <li>Explicit rights/sanitization attestations</li>
+            <li>Deterministic three-file bundle</li>
+          </ul>
+        </article>
+        <article>
+          <span class="stop">DOES NOT PROVE</span>
+          <h3>The source is safe or the workflow is repaired.</h3>
+          <ul>
+            <li>No legal or privacy certification</li>
+            <li>No production postcondition</li>
+            <li>No recurrence reduction or ROI</li>
+            <li>No authorization to change a system</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="offer" aria-labelledby="offer-title">
+      <div class="offer-copy">
+        <span>WHEN THE REPEAT WORK IS REAL</span>
+        <h2 id="offer-title">GET THE $249 EXCEPTION AUDIT.</h2>
+        <p>Up to 25 sanitized records become a recurrence map, supplied-time cost ranking, authority map, remediation brief, and one reversible fixture-only policy draft when an eligible pattern exists.</p>
+        <p class="offer-note">Fixed scope. Fit confirmed before invoice. No card on the request form. No credentials or production access.</p>
+      </div>
+      <div class="offer-actions">
+        <a class="button button-acid" href="https://yotton.monatomicsmaze.workers.dev/#request">Request the $249 audit</a>
+        <a class="text-link" href="https://yotton.monatomicsmaze.workers.dev/yotton-sample-exception-audit.pdf">View the six-page synthetic sample →</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>YOTTON</strong><span>Exception evidence without production authority.</span></div>
+    <div class="footer-links">
+      <a href="https://yotton.monatomicsmaze.workers.dev/privacy">Privacy</a>
+      <a href="https://yotton.monatomicsmaze.workers.dev/terms">Terms</a>
+      <a href="https://github.com/qubitsmaze/yotton-exception-sanitizer">Source</a>
+    </div>
+  </footer>
+
+  <script type="module" src="app.mjs"></script>
+</body>
+</html>

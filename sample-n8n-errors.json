@@ -1,0 +1,27 @@
+{
+  "executions": [
+    {
+      "startedAt": "2026-08-01T14:30:00Z",
+      "workflow": { "id": "synthetic-crm-sync", "name": "Synthetic CRM Sync" },
+      "error": {
+        "message": "schema validation failed",
+        "details": {
+          "expectedField": "payload.region_code",
+          "observedField": "payload.region_slug",
+          "expectedType": "string",
+          "observedType": "string"
+        }
+      }
+    },
+    {
+      "startedAt": "2026-08-02T09:15:00Z",
+      "workflow": { "id": "synthetic-crm-sync", "name": "Synthetic CRM Sync" },
+      "error": { "message": "duplicate identity conflict" }
+    },
+    {
+      "startedAt": "2026-08-03T17:45:00Z",
+      "workflow": { "id": "synthetic-contract-route", "name": "Synthetic Contract Route" },
+      "error": { "message": "payment contract price changed" }
+    }
+  ]
+}
