@@ -19,14 +19,19 @@ test("site is a self-contained local-only acquisition tool", async () => {
 });
 
 test("SEO and safety support files exist and exclude private surfaces", async () => {
-  const [robots, sitemap, readme] = await Promise.all([
+  const [robots, sitemap, readme, indexNow, indexNowKey] = await Promise.all([
     read("robots.txt"),
     read("sitemap.xml"),
     read("README.md"),
+    read("scripts/submit-indexnow.mjs"),
+    read("978b65cd2ef156f8528da569b9dbb85b.txt"),
   ]);
   assert.match(robots, /Allow: \//);
   assert.match(sitemap, /qubitsmaze\.github\.io\/yotton-exception-sanitizer/);
   assert.match(readme, /No upload/i);
   assert.match(readme, /synthetic/i);
   assert.doesNotMatch(readme, /guarantee|observed ROI/i);
+  assert.match(indexNow, /api\.indexnow\.org\/indexnow/);
+  assert.match(indexNow, /qubitsmaze\.github\.io\/yotton-exception-sanitizer/);
+  assert.equal(indexNowKey.trim(), "978b65cd2ef156f8528da569b9dbb85b");
 });

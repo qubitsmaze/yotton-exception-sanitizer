@@ -13,6 +13,7 @@ const required = [
   "sitemap.xml",
   "README.md",
   "LICENSE.md",
+  "978b65cd2ef156f8528da569b9dbb85b.txt",
 ];
 for (const name of required) {
   const file = new URL(name, root);

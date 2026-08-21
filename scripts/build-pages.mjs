@@ -13,6 +13,7 @@ const files = [
   "sitemap.xml",
   "README.md",
   "LICENSE.md",
+  "978b65cd2ef156f8528da569b9dbb85b.txt",
 ];
 await rm(dist, { recursive: true, force: true });
 await mkdir(dist, { recursive: true });
